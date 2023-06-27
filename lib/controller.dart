@@ -107,7 +107,7 @@ class NixyTextFieldController extends TextEditingController {
               },
             )];
 
-        switch (patternMatched) {
+        switch (patternMatched!) {
           case Patterns.BOLD_TEXT_PATTERN:
             formatText = match[0];
           case Patterns.CHECKBOX_LIST_PATTERN:
@@ -118,7 +118,7 @@ class NixyTextFieldController extends TextEditingController {
             formatText = match[0];
           case Patterns.URL_PATTERN:
             formatText = match[0];
-          default:
+          case Patterns.HEADERS_PATTERN:
             formatText = match[2];
         }
 
