@@ -1,7 +1,7 @@
 name: nixy_markdown_controller
 version: 0.1.0
-homepage: https://github.com/muhammedkpln
-description: A new Flutter package project.
+homepage: https://github.com/nixynotes/nixy_markdown_controller
+description: Markdown controller for Nixy
 environment: 
   sdk: '>=3.0.5 <4.0.0'
   flutter: '>=1.17.0'
