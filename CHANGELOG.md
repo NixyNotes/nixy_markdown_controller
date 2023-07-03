@@ -1,3 +1,6 @@
+# 0.1.3
+- dipose recognizers on dispose
+
 # 0.1.2
 - export styles.dart
 # 0.1.1
