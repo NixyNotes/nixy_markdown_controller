@@ -39,6 +39,16 @@ class NixyTextFieldController extends TextEditingController {
   /// Build context
   final BuildContext context;
 
+  final List<GestureRecognizer> _tapRecognizers = [];
+
+  @override
+  void dispose() {
+    for (final recognizer in _tapRecognizers) {
+      recognizer.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   set text(String newText) {
     value = value.copyWith(
@@ -49,29 +59,39 @@ class NixyTextFieldController extends TextEditingController {
   }
 
   TapGestureRecognizer? _checkboxTapRecognizer(
-    String match,
-    Patterns patternMatched,
+    String? match,
+    Patterns? patternMatched,
   ) {
     final recognizers = TapRecognizers(
-      patternMatched: patternMatched,
-      match: match,
+      patternMatched: patternMatched!,
+      match: match!,
       context: context,
     );
 
     if (patternMatched == Patterns.URL_PATTERN) {
-      return recognizers.onPressUrlPattern();
+      final recognizer = recognizers.onPressUrlPattern();
+      _tapRecognizers.add(recognizer);
+
+      return recognizer;
     }
 
     if (patternMatched == Patterns.CHECKBOX_LIST_PATTERN) {
-      recognizers.onPressCheckboxListPattern(value, text, (newValue) {
+      final recognizer =
+          recognizers.onPressCheckboxListPattern(value, text, (newValue) {
         value = newValue;
       });
+
+      _tapRecognizers.add(recognizer);
+      return recognizer;
     }
     if (patternMatched == Patterns.CHECKBOX_LIST_DONE_PATTERN) {
-      return recognizers.onPressCheckboxDoneListPattern(value, text,
-          (newValue) {
+      final recognizer =
+          recognizers.onPressCheckboxDoneListPattern(value, text, (newValue) {
         value = newValue;
       });
+
+      _tapRecognizers.add(recognizer);
+      return recognizer;
     }
 
     return null;
@@ -107,6 +127,10 @@ class NixyTextFieldController extends TextEditingController {
               },
             )];
 
+        if (patternMatched == null) {
+          return '';
+        }
+
         switch (patternMatched!) {
           case Patterns.BOLD_TEXT_PATTERN:
             formatText = match[0];
@@ -123,7 +147,7 @@ class NixyTextFieldController extends TextEditingController {
         }
 
         children.addAll([
-          if (match[1] != null)
+          if (match.groupCount > 0)
             TextSpan(
               text: match[1],
               style: myStyle?.merge(
@@ -136,7 +160,7 @@ class NixyTextFieldController extends TextEditingController {
           TextSpan(
             text: formatText,
             style: style?.merge(myStyle),
-            recognizer: _checkboxTapRecognizer(match[0]!, patternMatched!),
+            recognizer: _checkboxTapRecognizer(match[0], patternMatched),
           ),
         ]);
         return '';
